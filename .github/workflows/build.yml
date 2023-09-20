@@ -1,0 +1,26 @@
+name: Build extension
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Add nuget to PATH
+        uses: nuget/setup-nuget@v1
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Restore
+        run: nuget restore
+      - name: Build
+        run: msbuild /p:configuration=Debug /p:Platform="Mixed Platforms"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ResxCodeFileGeneratorEx2022.vsix
+          path: src\ResXFileCodeGeneratorExPackage\bin\Debug\ResxCodeFileGeneratorEx2022.vsix
